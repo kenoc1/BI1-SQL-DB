@@ -54,7 +54,7 @@ CREATE TABLE Mitarbeiter
 (
     Mitarbeiter_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Mitarbeiter_Id >= '0'),
     Vorname        VARCHAR2(128 CHAR) NOT NULL,
-    Nachnane       VARCHAR2(128 CHAR) NOT NULL,
+    Nachname       VARCHAR2(128 CHAR) NOT NULL,
     Provisionssatz NUMBER(2, 2) CHECK (Provisionssatz >= '0'),
     Adress_Id      NUMBER(10)         NOT NULL,
     PRIMARY KEY (Mitarbeiter_Id)

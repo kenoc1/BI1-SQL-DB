@@ -1,11 +1,11 @@
 CREATE TABLE Produkt
 (
     Produkt_Id       NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Produkt_Id >= '0'),
-    Gewicht          NUMBER(10, 4) CHECK (Gewicht >= '0'),
+    Gewicht          NUMBER(10, 4)      CHECK (Gewicht >= '0'),
     Umsatzsteuersatz NUMBER(10, 2)      NOT NULL CHECK (Umsatzsteuersatz >= '0'),
     Bezeichnung      VARCHAR2(128 CHAR) NOT NULL,
     SKU              NUMBER(10)         NOT NULL CHECK (SKU >= '0'),
-    Typ              VARCHAR2(15 CHAR) CHECK ( Typ IN ('gewichtsbasiert', 'stueckbasiert')),
+    Typ              VARCHAR2(15 CHAR)  CHECK ( Typ IN ('gewichtsbasiert', 'stueckbasiert')),
     Produkt_Hoehe    NUMBER(10, 2),
     Produkt_Tiefe    NUMBER(10, 2),
     Produkt_Breite   NUMBER(10, 2),
@@ -119,8 +119,8 @@ CREATE TABLE Preis
 (
     Preis_Id           NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) NOT NULL CHECK (Preis_Id >= '0'),
     Betrag             NUMBER(10, 2)                                                                 NOT NULL CHECK (Betrag >= '0'),
-    Gültigkeits_Beginn DATE                                                                          NOT NULL,
-    Gültigkeits_Ende   DATE,
+    Gueltigkeits_Beginn DATE                                                                          NOT NULL,
+    Gueltigkeits_Ende   DATE,
     Typ                VARCHAR2(15 CHAR) CHECK ( Typ IN ('Einkauf', 'Verkauf')),
     PRIMARY KEY (Preis_Id)
 );
@@ -141,7 +141,7 @@ CREATE TABLE Filiale
     Bezeichnung       VARCHAR2(128 CHAR) NOT NULL,
     Adress_Id         NUMBER(10)         NOT NULL,
     IBAN              VARCHAR2(34 CHAR),
-    Zahlungsempfänger VARCHAR2(128 CHAR),
+    Zahlungsempfaenger VARCHAR2(128 CHAR),
     BIC               VARCHAR2(11 CHAR),
     PRIMARY KEY (Filiale_Id)
 );
@@ -169,7 +169,7 @@ CREATE TABLE Lager_Einheit
     Regalspalte   NUMBER(10)    NOT NULL CHECK (Regalspalte >= '0'),
     Regalbreite   NUMBER(10, 2) NOT NULL CHECK (Regalbreite >= '0'),
     Regaltiefe    NUMBER(10, 2) NOT NULL CHECK (Regaltiefe >= '0'),
-    Regalhöhe     NUMBER(10, 2) NOT NULL CHECK (Regalhöhe >= '0'),
+    Regalhoehe     NUMBER(10, 2) NOT NULL CHECK (Regalhoehe >= '0'),
     Typ           VARCHAR2(15 CHAR) CHECK ( Typ IN ('Lagerflaeche', 'Verkaufsflaeche')),
     PRIMARY KEY (Lagerplatz_Id)
 );
@@ -261,13 +261,13 @@ ALTER TABLE Mitarbeiter
     ADD FOREIGN KEY (Adress_Id) REFERENCES Adresse (Adress_Id);
 
 ALTER TABLE Einkauf
-    ADD FOREIGN KEY (Lieferant_Id) REFERENCES Lieferant (Lieferant_Id);
+    ADD FOREIGN KEY (Lieferant_Id) REFERENCES Lieferant (Lieferant_Id) ON DELETE SET NULL;
 
 ALTER TABLE Einkauf
-    ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id);
+    ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id) ON DELETE SET NULL;
 
 ALTER TABLE Verkauf
-    ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id);
+    ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id) ON DELETE SET NULL;
 
 ALTER TABLE Verkauf
     ADD FOREIGN KEY (Kunden_Id) REFERENCES Kunde (Kunden_Id) ON DELETE SET NULL;

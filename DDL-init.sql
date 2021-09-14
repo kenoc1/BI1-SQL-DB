@@ -1,11 +1,11 @@
 CREATE TABLE Produkt
 (
-    Produkt_Id       NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Produkt_Id >= '0'),
-    Gewicht          NUMBER(10, 4)      CHECK (Gewicht >= '0'),
+    Produkt_Id       NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
+    Gewicht          NUMBER(10, 4) CHECK (Gewicht >= '0'),
     Umsatzsteuersatz NUMBER(10, 2)      NOT NULL CHECK (Umsatzsteuersatz >= '0'),
     Bezeichnung      VARCHAR2(128 CHAR) NOT NULL,
     SKU              NUMBER(10)         NOT NULL CHECK (SKU >= '0'),
-    Typ              VARCHAR2(15 CHAR)  CHECK ( Typ IN ('gewichtsbasiert', 'stueckbasiert')),
+    Typ              VARCHAR2(15 CHAR) CHECK ( Typ IN ('gewichtsbasiert', 'stueckbasiert')),
     Produkt_Hoehe    NUMBER(10, 2),
     Produkt_Tiefe    NUMBER(10, 2),
     Produkt_Breite   NUMBER(10, 2),
@@ -15,7 +15,7 @@ CREATE TABLE Produkt
 
 CREATE TABLE Produktkategorie
 (
-    Produktkategorie_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Produktkategorie_Id >= '0'),
+    Produktkategorie_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Bezeichnung         VARCHAR2(128 CHAR) NOT NULL,
     Alterfreigabe       NUMBER(10) CHECK (Alterfreigabe >= '0'),
     PRIMARY KEY (Produktkategorie_Id)
@@ -23,14 +23,14 @@ CREATE TABLE Produktkategorie
 
 CREATE TABLE Produktoberkategorie
 (
-    Produktoberkategorie_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Produktoberkategorie_Id >= '0'),
+    Produktoberkategorie_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Bezeichnung             VARCHAR2(128 CHAR) NOT NULL,
     PRIMARY KEY (Produktoberkategorie_Id)
 );
 
 CREATE TABLE Einkauf
 (
-    Einkaufs_Id    NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Einkaufs_Id >= '0'),
+    Einkaufs_Id    NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Einkaufsdatum  DATE       NOT NULL,
     Einkaufssumme  CHAR(1 CHAR),
     Lieferant_Id   NUMBER(10) NOT NULL,
@@ -41,10 +41,12 @@ CREATE TABLE Einkauf
 
 CREATE TABLE Verkauf
 (
-    Verkaufs_Id    NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Verkaufs_Id >= '0'),
+    Verkaufs_Id    NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Verkaufdatum   DATE       NOT NULL,
-    Verkaufssumme  CHAR(1 CHAR),
-    Steuersumme    CHAR(1 CHAR),
+    BRUTTO_SUMME   NUMBER(10, 2),
+    UST_SUMME      NUMBER(10, 2),
+    NETTO_SUMME    NUMBER(10, 2),
+    GESAMTGEWICHT  NUMBER(10, 2),
     Mitarbeiter_Id NUMBER(10) NOT NULL,
     Kunden_Id      NUMBER(10),
     PRIMARY KEY (Verkaufs_Id)
@@ -52,17 +54,18 @@ CREATE TABLE Verkauf
 
 CREATE TABLE Mitarbeiter
 (
-    Mitarbeiter_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Mitarbeiter_Id >= '0'),
+    Mitarbeiter_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Vorname        VARCHAR2(128 CHAR) NOT NULL,
     Nachname       VARCHAR2(128 CHAR) NOT NULL,
     Provisionssatz NUMBER(2, 2) CHECK (Provisionssatz >= '0'),
     Adress_Id      NUMBER(10)         NOT NULL,
+    Gehalt         NUMBER(10, 2),
     PRIMARY KEY (Mitarbeiter_Id)
 );
 
 Create TABLE Funktion
 (
-    Funktions_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Funktions_Id >= '0'),
+    Funktions_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Bezeichnung  VARCHAR2(128 CHAR) NOT NULL,
     PRIMARY KEY (Funktions_Id)
 );
@@ -75,7 +78,7 @@ CREATE TABLE Zuweisung_Mitarbeiter_Funktion
 
 CREATE TABLE Kunde
 (
-    Kunden_Id            NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Kunden_Id >= '0'),
+    Kunden_Id            NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Vorname              VARCHAR2(128 CHAR) NOT NULL,
     Nachname             VARCHAR2(128 CHAR) NOT NULL,
     Geburtsdatum         DATE               NOT NULL,
@@ -86,7 +89,7 @@ CREATE TABLE Kunde
 
 CREATE TABLE Adresse
 (
-    Adress_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Adress_Id >= '0'),
+    Adress_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Strasse   VARCHAR2(128 CHAR) NOT NULL,
     Ort_Id    NUMBER(10)         NOT NULL,
     PRIMARY KEY (Adress_Id)
@@ -94,7 +97,7 @@ CREATE TABLE Adresse
 
 CREATE TABLE Ort
 (
-    Ort_Id          NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Ort_Id >= '0'),
+    Ort_Id          NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Ortskennzahl_Id NUMBER(10) CHECK (Ortskennzahl_Id >= '0'),
     Name            VARCHAR2(128 CHAR) NOT NULL,
     Land            VARCHAR2(128 CHAR) NOT NULL,
@@ -103,52 +106,54 @@ CREATE TABLE Ort
 
 CREATE TABLE Ortskennzahl
 (
-    Ortskennzahl_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Ortskennzahl_Id >= '0'),
+    Ortskennzahl_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Ortskennzahl    VARCHAR2(30 CHAR),
     PRIMARY KEY (Ortskennzahl_Id)
 );
 
 CREATE TABLE Land
 (
-    Land_Id     NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Land_Id >= '0'),
+    Land_Id     NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Bezeichnung VARCHAR2(128 CHAR) NOT NULL,
     PRIMARY KEY (Land_Id)
 );
 
 CREATE TABLE Preis
 (
-    Preis_Id           NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) NOT NULL CHECK (Preis_Id >= '0'),
-    Betrag             NUMBER(10, 2)                                                                 NOT NULL CHECK (Betrag >= '0'),
+    Preis_Id            NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) NOT NULL,
+    Betrag              NUMBER(10, 2)                                                                 NOT NULL CHECK (Betrag >= '0'),
     Gueltigkeits_Beginn DATE                                                                          NOT NULL,
     Gueltigkeits_Ende   DATE,
-    Typ                VARCHAR2(15 CHAR) CHECK ( Typ IN ('Einkauf', 'Verkauf')),
+    Typ                 VARCHAR2(15 CHAR) CHECK ( Typ IN ('Einkauf', 'Verkauf')),
+    Produkt_Id          NUMBER(10)                                                                    NOT NULL,
     PRIMARY KEY (Preis_Id)
 );
 
 CREATE TABLE Lieferant
 (
-    Lieferant_Id         NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Lieferant_Id >= '0'),
-    Name                 VARCHAR2(128 CHAR) NOT NULL,
-    EMail                VARCHAR2(128 CHAR) NOT NULL,
-    Name_Ansprechpartner VARCHAR2(128 CHAR) NOT NULL,
-    Adress_Id            NUMBER(10)         NOT NULL,
+    Lieferant_Id            NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
+    Name                    VARCHAR2(128 CHAR) NOT NULL,
+    EMail                   VARCHAR2(128 CHAR) NOT NULL,
+    Name_Ansprechpartner    VARCHAR2(128 CHAR) NOT NULL,
+    VORNAME_ANSPRECHPARTNER VARCHAR2(128 CHAR) NOT NULL,
+    Adress_Id               NUMBER(10)         NOT NULL,
     PRIMARY KEY (Lieferant_Id)
 );
 
 CREATE TABLE Filiale
 (
-    Filiale_Id        NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Filiale_Id >= '0'),
-    Bezeichnung       VARCHAR2(128 CHAR) NOT NULL,
-    Adress_Id         NUMBER(10)         NOT NULL,
-    IBAN              VARCHAR2(34 CHAR),
+    Filiale_Id         NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
+    Bezeichnung        VARCHAR2(128 CHAR) NOT NULL,
+    Adress_Id          NUMBER(10)         NOT NULL,
+    IBAN               VARCHAR2(34 CHAR),
     Zahlungsempfaenger VARCHAR2(128 CHAR),
-    BIC               VARCHAR2(11 CHAR),
+    BIC                VARCHAR2(11 CHAR),
     PRIMARY KEY (Filiale_Id)
 );
 
 CREATE TABLE Marke
 (
-    Marke_Id      NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Marke_Id >= '0'),
+    Marke_Id      NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Hersteller_Id NUMBER(10)         NOT NULL,
     Bezeichnung   VARCHAR2(128 CHAR) NOT NULL,
     PRIMARY KEY (Marke_Id)
@@ -156,37 +161,37 @@ CREATE TABLE Marke
 
 CREATE TABLE Hersteller
 (
-    Hersteller_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Hersteller_Id >= '0'),
+    Hersteller_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Bezeichnung   VARCHAR2(128 CHAR) NOT NULL,
     PRIMARY KEY (Hersteller_Id)
 );
 
 CREATE TABLE Lager_Einheit
 (
-    Lagerplatz_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Lagerplatz_Id >= '0'),
+    Lagerplatz_Id NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Regal_Nummer  NUMBER(10)    NOT NULL CHECK (Regal_Nummer >= '0'),
     Regalzeile    NUMBER(10)    NOT NULL CHECK (Regalzeile >= '0'),
     Regalspalte   NUMBER(10)    NOT NULL CHECK (Regalspalte >= '0'),
     Regalbreite   NUMBER(10, 2) NOT NULL CHECK (Regalbreite >= '0'),
     Regaltiefe    NUMBER(10, 2) NOT NULL CHECK (Regaltiefe >= '0'),
-    Regalhoehe     NUMBER(10, 2) NOT NULL CHECK (Regalhoehe >= '0'),
+    Regalhoehe    NUMBER(10, 2) NOT NULL CHECK (Regalhoehe >= '0'),
     Typ           VARCHAR2(15 CHAR) CHECK ( Typ IN ('Lagerflaeche', 'Verkaufsflaeche')),
     PRIMARY KEY (Lagerplatz_Id)
 );
 
 CREATE TABLE Bon
 (
-    Bon_Nummer     NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Bon_Nummer >= '0'),
+    Bon_Nummer     NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Verkaufs_Id    NUMBER(10)                                                 NOT NULL,
     Gegebenes_Geld VARCHAR2(128 CHAR),
     Zahlungsart    VARCHAR2(15 CHAR) CHECK (Zahlungsart IN ('Bar', 'Karte') ) NOT NULL,
-    Rueckgeld      VARCHAR2(128 CHAR),
+    Rueckgeld      Number(10, 2),
     PRIMARY KEY (Bon_Nummer)
 );
 
 CREATE TABLE Lieferschein
 (
-    Lieferschein_Nummer NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Lieferschein_Nummer >= '0'),
+    Lieferschein_Nummer NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Verkaufs_Id         NUMBER(10) NOT Null,
     Lieferdatum         DATE       Not NULL,
     Liefer_Kosten       NUMBER(10, 2),
@@ -195,7 +200,7 @@ CREATE TABLE Lieferschein
 
 CREATE TABLE Rechnung
 (
-    Rechnung_Nummer NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3) CHECK (Rechnung_Nummer >= '0'),
+    Rechnung_Nummer NUMBER(10) generated always as identity (start with 1 increment by 1 cache 3),
     Verkaufs_Id     NUMBER(10) NOT Null,
     Abgleich_Datum  DATE       NOT NULL,
     PRIMARY KEY (Rechnung_Nummer)
@@ -255,10 +260,10 @@ CREATE TABLE Gewichtbasiertes_Produkt_Im_Verkauf
 );
 
 ALTER TABLE Produkt
-    ADD FOREIGN KEY (Marke_Id) REFERENCES Marke (Marke_Id);
+    ADD FOREIGN KEY (Marke_Id) REFERENCES Marke (Marke_Id) ON DELETE SET NULL;
 
 ALTER TABLE Mitarbeiter
-    ADD FOREIGN KEY (Adress_Id) REFERENCES Adresse (Adress_Id);
+    ADD FOREIGN KEY (Adress_Id) REFERENCES Adresse (Adress_Id) ON DELETE CASCADE;
 
 ALTER TABLE Einkauf
     ADD FOREIGN KEY (Lieferant_Id) REFERENCES Lieferant (Lieferant_Id) ON DELETE SET NULL;
@@ -266,20 +271,20 @@ ALTER TABLE Einkauf
 ALTER TABLE Einkauf
     ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id) ON DELETE SET NULL;
 
-ALTER TABLE Verkauf
+ALTER TABLE VERKAUF
     ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id) ON DELETE SET NULL;
 
-ALTER TABLE Verkauf
+ALTER TABLE VERKAUF
     ADD FOREIGN KEY (Kunden_Id) REFERENCES Kunde (Kunden_Id) ON DELETE SET NULL;
 
 ALTER TABLE Adresse
-    ADD FOREIGN KEY (Ort_Id) REFERENCES Ort (Ort_Id);
+    ADD FOREIGN KEY (Ort_Id) REFERENCES Ort (Ort_Id) ON DELETE CASCADE;
 
 ALTER TABLE Lieferant
-    ADD FOREIGN KEY (Adress_Id) REFERENCES Adresse (Adress_Id);
+    ADD FOREIGN KEY (Adress_Id) REFERENCES Adresse (Adress_Id) ON DELETE SET NULL;
 
 ALTER TABLE Filiale
-    ADD FOREIGN KEY (Adress_Id) REFERENCES Adresse (Adress_Id);
+    ADD FOREIGN KEY (Adress_Id) REFERENCES Adresse (Adress_Id) ON DELETE SET NULL;
 
 ALTER TABLE Stueckzahlbasiertes_Produkt_Im_Einkauf
     ADD FOREIGN KEY (Einkaufs_Id) REFERENCES Einkauf (Einkaufs_Id) ON DELETE CASCADE;
@@ -291,7 +296,7 @@ ALTER TABLE Stueckzahlbasiertes_Produkt_Im_Verkauf
     ADD FOREIGN KEY (Produkt_Id) REFERENCES Produkt (Produkt_Id) ON DELETE CASCADE;
 
 ALTER TABLE Stueckzahlbasiertes_Produkt_Im_Verkauf
-    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES Verkauf (Verkaufs_Id) ON DELETE CASCADE;
+    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES VERKAUF (Verkaufs_Id) ON DELETE CASCADE;
 
 ALTER TABLE Zuweisung_Produkt_Produktkategorie
     ADD FOREIGN KEY (Produkt_Id) REFERENCES Produkt (Produkt_Id) ON DELETE CASCADE;
@@ -300,10 +305,10 @@ ALTER TABLE Zuweisung_Produkt_Produktkategorie
     ADD FOREIGN KEY (Produktkategorie_Id) REFERENCES Produktkategorie (Produktkategorie_Id) ON DELETE CASCADE;
 
 ALTER TABLE Zuweisung_Produkt_Lagerplatz
-    ADD FOREIGN KEY (Produkt_Id) REFERENCES Produkt (Produkt_Id) ON DELETE CASCADE;
+    ADD FOREIGN KEY (Produkt_Id) REFERENCES Produkt (Produkt_Id);
 
 ALTER TABLE Zuweisung_Produkt_Lagerplatz
-    ADD FOREIGN KEY (Lagerplatz_Id) REFERENCES Lager_Einheit (Lagerplatz_Id) ON DELETE CASCADE;
+    ADD FOREIGN KEY (Lagerplatz_Id) REFERENCES Lager_Einheit (Lagerplatz_Id);
 
 ALTER TABLE Zuweisung_Kategorie_Oberkategorie
     ADD FOREIGN KEY (Produktkategorie_Id) REFERENCES Produktkategorie (Produktkategorie_Id) ON DELETE CASCADE;
@@ -318,37 +323,40 @@ ALTER TABLE Gewichtbasiertes_Produkt_Im_Einkauf
     ADD FOREIGN KEY (Produkt_Id) REFERENCES Produkt (Produkt_Id) ON DELETE CASCADE;
 
 ALTER TABLE Gewichtbasiertes_Produkt_Im_Verkauf
-    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES Verkauf (Verkaufs_Id) ON DELETE CASCADE;
+    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES VERKAUF (Verkaufs_Id) ON DELETE CASCADE;
 
 ALTER TABLE Gewichtbasiertes_Produkt_Im_Verkauf
     ADD FOREIGN KEY (Produkt_Id) REFERENCES Produkt (Produkt_Id) ON DELETE CASCADE;
 
 ALTER TABLE Zuweisung_Mitarbeiter_Funktion
-    ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id) ON DELETE CASCADE;
+    ADD FOREIGN KEY (Mitarbeiter_Id) REFERENCES Mitarbeiter (Mitarbeiter_Id) ON DELETE SET NULL;
 
 ALTER TABLE Zuweisung_Mitarbeiter_Funktion
-    ADD FOREIGN KEY (Funktions_Id) REFERENCES Funktion (Funktions_Id) ON DELETE CASCADE;
+    ADD FOREIGN KEY (Funktions_Id) REFERENCES Funktion (Funktions_Id) ON DELETE SET NULL;
 
 ALTER TABLE Kunde
-    ADD FOREIGN KEY (Rechnungs_Adresse_Id) REFERENCES Adresse (Adress_Id);
+    ADD FOREIGN KEY (Rechnungs_Adresse_Id) REFERENCES Adresse (Adress_Id) ON DELETE SET NULL;
 
 ALTER TABLE Kunde
-    ADD FOREIGN KEY (Liefer_Adresse_Id) REFERENCES Adresse (Adress_Id);
+    ADD FOREIGN KEY (Liefer_Adresse_Id) REFERENCES Adresse (Adress_Id) ON DELETE SET NULL;
 
-ALTER TABLE Ort
-    ADD FOREIGN KEY (Ortskennzahl_Id) REFERENCES Ortskennzahl (Ortskennzahl_Id);
+ALTER TABLE Ortskennzahl
+    ADD FOREIGN KEY (Ort_Id) REFERENCES Ort (Ort_Id) ON DELETE CASCADE;
 
 ALTER TABLE Marke
-    ADD FOREIGN KEY (Hersteller_Id) REFERENCES Hersteller (Hersteller_Id);
+    ADD FOREIGN KEY (Hersteller_Id) REFERENCES Hersteller (Hersteller_Id) ON DELETE SET NULL;
 
 ALTER TABLE Bon
-    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES Verkauf (Verkaufs_Id);
+    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES VERKAUF (Verkaufs_Id) ON DELETE CASCADE;
 
 ALTER TABLE Lieferschein
-    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES Verkauf (Verkaufs_Id);
+    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES VERKAUF (Verkaufs_Id) ON DELETE CASCADE;
 
 ALTER TABLE Rechnung
-    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES Verkauf (Verkaufs_Id);
+    ADD FOREIGN KEY (Verkaufs_Id) REFERENCES VERKAUF (Verkaufs_Id) ON DELETE CASCADE;
+
+ALTER TABLE Preis
+    ADD FOREIGN KEY (Produkt_Id) references PRODUKT (Produkt_Id) ON DELETE CASCADE;
 
 
 COMMENT ON TABLE Produktkategorie IS 'Eine Subkategorie, die dem Produkt zugeordnet ist.';
@@ -360,6 +368,6 @@ COMMENT ON TABLE Gewichtbasiertes_Produkt_Im_Verkauf IS 'Die Einheit des Gewicht
 COMMENT ON TABLE Preis IS 'Die Geldeinheit in IB$ (1 IB$ = 0,5€)';
 COMMENT ON TABLE Bon IS 'Die Geldeinheit in IB$ (1 IB$ = 0,5€)';
 COMMENT ON TABLE Lieferschein IS 'Die Geldeinheit in IB$ (1 IB$ = 0,5€)';
-COMMENT ON TABLE Verkauf IS 'Die Geldeinheit in IB$ (1 IB$ = 0,5€)';
+COMMENT ON TABLE VERKAUF IS 'Die Geldeinheit in IB$ (1 IB$ = 0,5€)';
 COMMENT ON TABLE Einkauf IS 'Die Geldeinheit in IB$ (1 IB$ = 0,5€)';
 
